@@ -391,8 +391,6 @@ async def main():
     #roomid = 3458224
     client = MyBLiveClient(roomid, ssl=True)
     future = client.start()
-    #await listenTest()
-    #refreshTask = asyncio.ensure_future(refreshLogin())
     #await refreshLogin()
     try:
         # 5秒后停止，测试用
