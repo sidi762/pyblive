@@ -24,6 +24,8 @@ inStandByMode = 0
 neteasePhone = 0
 neteasePasswd = 0
 roomid = 0
+#server = http://127.0.0.1:3000
+server = http://kery.fgprc.org:3000
 
 #Development Note
 #VLC MediaPlayer State
@@ -269,7 +271,7 @@ async def post(session, url, params):
 async def phoneLogin(phone,passw):
     params = {'phone':phone, "password":passw}
     async with aiohttp.ClientSession() as session:
-        result = await post(session, 'http://127.0.0.1:3000/login/cellphone', params)
+        result = await post(session, server + '/login/cellphone', params)
         return
         
 async def refreshLogin():
@@ -282,7 +284,7 @@ async def refreshLogin():
 async def searchSong(song):
     params = {'keywords': song}
     async with aiohttp.ClientSession() as session:
-        jsonData = await fetch(session, 'http://127.0.0.1:3000/search', params)
+        jsonData = await fetch(session, server + '/search', params)
         #print(jsonData)
         data = json.loads(jsonData)
         allResults = data["result"]
@@ -297,7 +299,7 @@ async def searchSong(song):
 async def searchSongUrl(id):
     params = {'id': id}
     async with aiohttp.ClientSession() as session:
-        jsonData = await fetch(session, 'http://127.0.0.1:3000/song/url', params)
+        jsonData = await fetch(session, server + '/song/url', params)
         #print(jsonData)
         data = json.loads(jsonData)
         dataUrl = data["data"][0]["url"]
