@@ -5,7 +5,10 @@ import asyncio
 import blivedm
 import pyttsx3
 import pyttsx3.drivers
-import pyttsx3.drivers.nsss
+# MacOS System please import nsss
+# import pyttsx3.drivers.nsss
+# Windows System please import sapi5
+import pyttsx3.drivers.sapi5
 import json
 import aiohttp
 import threading
@@ -211,6 +214,9 @@ def setSong(index):
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
+        outputSongList = open('songList.txt', mode='w+',encoding='utf-8')
+        print("正在播放： " + songList[index][0] + "   -   " + songList[index][2], file=outputSongList)
+        outputSongList.close()
         print("     playing " + songList[index][0])
     else:
         print("     Failed: Song cannot be played")
@@ -226,6 +232,9 @@ def setStandbySong(index):
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
+        outputSongList = open('songList.txt', mode='w+', encoding='utf-8')
+        print("正在播放： " + standbyList[index][0] + "   -   " + standbyList[index][2], file=outputSongList)
+        outputSongList.close()
         print("     Standby playing " + standbyList[index][0])
     else:
         print("     Failed: Song cannot be played")
@@ -290,9 +299,10 @@ async def searchSong(song):
         allResults = data["result"]
         if allResults["songCount"] != 0:
             topResult = allResults["songs"][0]
+            artistsResult = topResult["artists"][0]
             #print(topResult[0])
             #urlResult = await searchSongUrl(topResult["id"]) #Moved before the song being played as the url will expire
-            return [topResult["name"],topResult["id"]]
+            return [topResult["name"], topResult["id"], artistsResult["name"]]
         else:
            return 0
 
