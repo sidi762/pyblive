@@ -76,7 +76,7 @@ def keyboardLogic(loop):
         showRemainingSongList(songList)
     elif i == "full list":
         showFullSongList(songList)
-    elif i[0:8] == "standby ":
+    elif i[0:8] == "standby " or i[0:5] == "stby ":
         if i[8:12] == "add ":
             searchTask = asyncio.ensure_future(searchSong(i[12:]))
             loop.run_until_complete(searchTask)
@@ -205,9 +205,9 @@ def printHelp():
 def setSong(index):
     global songIndex
     urlResult = 0
-    searchTask = asyncio.ensure_future(searchSongUrl(songList[index][1]))
-    asyncio.get_event_loop().run_until_complete(searchTask)
-    urlResult = searchTask.result()
+    searchTasks = [asyncio.ensure_future(searchSongUrl(songList[index][1]))]
+    asyncio.get_event_loop().run_until_complete(asyncio.wait(searchTasks))
+    urlResult = searchTasks[0].result()
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
@@ -220,9 +220,9 @@ def setSong(index):
 def setStandbySong(index):
     global standbyIndex
     urlResult = 0
-    searchTask = asyncio.ensure_future(searchSongUrl(standbyList[index][1]))
-    asyncio.get_event_loop().run_until_complete(searchTask)
-    urlResult = searchTask.result()
+    searchTasks = [asyncio.ensure_future(searchSongUrl(standbyList[index][1]))]
+    asyncio.get_event_loop().run_until_complete(asyncio.wait(searchTasks))
+    urlResult = searchTasks[0].result()
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
