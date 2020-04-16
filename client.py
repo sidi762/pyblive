@@ -411,7 +411,7 @@ if __name__ == '__main__':
     print("Based on:")
     print("blivedm: https://github.com/xfgryujk/blivedm")
     print("Netease music API: https://github.com/Binaryify/NeteaseCloudMusicApi")
-    print("Netease Music account is required. We won't save your account and password, those information will only be sent to Netease for authentication.")
+    #print("Netease Music account is required. We won't save your account and password, those information will only be sent to Netease for authentication.")
     printHelp()
     #neteasePhone = input("Type your Netease cellphone account: ")
     #neteasePasswd = getpass.getpass("Type your Netease password: ")
