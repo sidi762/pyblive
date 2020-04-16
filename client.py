@@ -215,7 +215,7 @@ def setSong(index):
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
         outputSongList = open('songList.txt', mode='w+',encoding='utf-8')
-        print("正在播放： " + songList[index][0] + "   -   " + songList[index][2], file=outputSongList)
+        print("正在播放： " + songList[index][0] + "  -  " + songList[index][2], file=outputSongList)
         outputSongList.close()
         print("     playing " + songList[index][0])
     else:
