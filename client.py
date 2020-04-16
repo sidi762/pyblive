@@ -24,8 +24,8 @@ inStandByMode = 0
 neteasePhone = 0
 neteasePasswd = 0
 roomid = 0
-#server = http://127.0.0.1:3000
-server = http://kery.fgprc.org:3000
+#server = "http://127.0.0.1:3000"
+server = "http://kery.fgprc.org:3000"
 
 #Development Note
 #VLC MediaPlayer State
