@@ -8,13 +8,17 @@ import pyttsx3.drivers
 # MacOS System please import nsss
 # import pyttsx3.drivers.nsss
 # Windows System please import sapi5
-import pyttsx3.drivers.sapi5
+# import pyttsx3.drivers.sapi5
 import json
 import aiohttp
 import threading
 import vlc
 import os
 import getpass
+
+version = "2.3"
+versionStatus = "beta"
+build = 24
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -23,6 +27,8 @@ standbyList = []
 songIndex = 0
 standbyIndex = 0
 lastPopularity = 0
+highestPopularity = 0
+income = 0
 inStandByMode = 0
 neteasePhone = 0
 neteasePasswd = 0
@@ -79,7 +85,7 @@ def keyboardLogic(loop):
         showRemainingSongList(songList)
     elif i == "full list":
         showFullSongList(songList)
-    elif i[0:8] == "standby " or i[0:5] == "stby ":
+    elif i[0:8] == "standby ":
         if i[8:12] == "add ":
             searchTask = asyncio.ensure_future(searchSong(i[12:]))
             loop.run_until_complete(searchTask)
@@ -101,6 +107,7 @@ def keyboardLogic(loop):
                 standbyList.pop(songToBeRemoved)
             except:
                 print("Error: invalid arguments")
+    
         
 
     elif i[0:5] == "swap " and i[6] == " ":
@@ -122,6 +129,8 @@ def keyboardLogic(loop):
         os.system("cls") #Windows
     elif i == "help":
         printHelp()
+    elif i == "version" or i == "v":
+        print(version  + " " + versionStatus + " build " + str(build))
     elif i == "":
         print(" ")
     elif i[0:7] == "remove ":
@@ -130,6 +139,11 @@ def keyboardLogic(loop):
             songList.pop(songToBeRemoved)
         except:
             print("Error: invalid arguments")
+    elif i == "quit" or i == "exit":
+        print("     Highest popularity: " + str(highestPopularity))
+        print("     Total income: " + str(income))
+        print("     Quitting, Good bye")
+        os._exit(0)
     else:
         print("Error: command not found")
     
@@ -194,13 +208,16 @@ def printHelp():
     print("     next: switch to next music")
     print("     list(ls): show list of not played music")
     print("     full list: show full list of music")
+    print("     remove: remove a music in the list")
     print("     ")
     print("     standby add: add to standby list")
     print("     standby list(ls): show list of not played music in standby list")
     print("     standby full list: show full list of standby music")
+    print("     standby remove: remove a music in standby list")
     print("     clear(macOS, linux): clear screen")
     print("     cls(Windows): clear screen")
     print("     help: show help message")
+    print("     quit(exit): quit the program")
 
 #def saveListToFile(list):
     
@@ -345,9 +362,12 @@ class MyBLiveClient(blivedm.BLiveClient):
 
     async def _on_receive_popularity(self, popularity: int):
         global lastPopularity
+        global highestPopularity
         if popularity != lastPopularity:
             print(f'当前人气值：{popularity}')
             lastPopularity = popularity
+            if lastPopularity > highestPopularity:
+                highestPopularity = lastPopularity
 
     async def _on_receive_danmaku(self, danmaku: blivedm.DanmakuMessage):
         print(f'{danmaku.uname}：{danmaku.msg}')
@@ -379,8 +399,11 @@ class MyBLiveClient(blivedm.BLiveClient):
             await text2Speech("你可能想要点歌？请注意右上角点歌格式哦")
 
     async def _on_receive_gift(self, gift: blivedm.GiftMessage):
+        global income
         print(f'{gift.uname} 赠送{gift.gift_name}x{gift.num} （{gift.coin_type}币x{gift.total_coin}）')
         await text2Speech('感谢' + gift.uname + '赠送的' + gift.gift_name)
+        if gift.coin_type == gold:
+            income += gift.total_coin
 
     async def _on_buy_guard(self, message: blivedm.GuardBuyMessage):
         print(f'{message.username} 购买{message.gift_name}')
@@ -417,12 +440,13 @@ async def main():
 
 
 if __name__ == '__main__':
+    print("Pyblive " + version  + " " + versionStatus + " build " + str(build))
     print("Thanks for using pyblive client! Developed by: Sidi Liang")
     print("Based on:")
     print("blivedm: https://github.com/xfgryujk/blivedm")
     print("Netease music API: https://github.com/Binaryify/NeteaseCloudMusicApi")
     #print("Netease Music account is required. We won't save your account and password, those information will only be sent to Netease for authentication.")
-    printHelp()
+    print("Type 'help' for usage")
     #neteasePhone = input("Type your Netease cellphone account: ")
     #neteasePasswd = getpass.getpass("Type your Netease password: ")
     roomid = input("Type your Room ID here: ")
