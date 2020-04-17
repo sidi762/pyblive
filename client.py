@@ -17,8 +17,8 @@ import os
 import getpass
 
 version = "2.3"
-versionStatus = "beta"
-build = 24
+versionStatus = "beta 4"
+build = 26
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -107,9 +107,12 @@ def keyboardLogic(loop):
                 standbyList.pop(songToBeRemoved)
             except:
                 print("Error: invalid arguments")
-    
-        
-
+        elif i[8:15] == "import ":
+            try:
+                importFromFile(i[15:])
+            except:
+                print("Import error: invalid file " + i[15:])
+   
     elif i[0:5] == "swap " and i[6] == " ":
         try:
             swap1 = int(i[7]) - 1 #从1开始数
@@ -219,7 +222,20 @@ def printHelp():
     print("     help: show help message")
     print("     quit(exit): quit the program")
 
-#def saveListToFile(list):
+def importFromFile(file, list=standbyList):
+    importFile = open(file)
+    for line in importFile.readlines():                         
+        line = line.strip() #去掉每行头尾空白  
+        searchTask = asyncio.ensure_future(searchSong(line))
+        asyncio.get_event_loop().run_until_complete(searchTask)
+        song = searchTask.result()
+        if song:
+            addingTask = asyncio.ensure_future(addToList(song, standbyList, 1))
+            asyncio.get_event_loop().run_until_complete(addingTask)
+        else:
+            print("Cannot add to standby list: Song not found")
+    
+    return
     
 
 def setSong(index):
@@ -231,7 +247,7 @@ def setSong(index):
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
-        outputSongList = open('songList.txt', mode='w+',encoding='utf-8')
+        outputSongList = open('now_playing.txt', mode='w+',encoding='utf-8')
         print("正在播放： " + songList[index][0] + "  -  " + songList[index][2], file=outputSongList)
         outputSongList.close()
         print("     playing " + songList[index][0])
@@ -249,7 +265,7 @@ def setStandbySong(index):
     if urlResult:
         mediaPlayer.set_mrl(urlResult)
         mediaPlayer.play()
-        outputSongList = open('songList.txt', mode='w+', encoding='utf-8')
+        outputSongList = open('now_playing.txt', mode='w+', encoding='utf-8')
         print("正在播放： " + standbyList[index][0] + "   -   " + standbyList[index][2], file=outputSongList)
         outputSongList.close()
         print("     Standby playing " + standbyList[index][0])
@@ -451,8 +467,9 @@ if __name__ == '__main__':
     #neteasePasswd = getpass.getpass("Type your Netease password: ")
     roomid = input("Type your Room ID here: ")
     keyboardLoop = asyncio.new_event_loop()
+    mediaLoop = asyncio.new_event_loop()
     t = threading.Thread(target=listenKeyboard, name='keyboardListeningThread', args=(keyboardLoop,))
     t.start()
-    t2 = threading.Thread(target=mediaControlLoop, name='mediaControlThread', args=(keyboardLoop,))
+    t2 = threading.Thread(target=mediaControlLoop, name='mediaControlThread', args=(mediaLoop,))
     t2.start()
     asyncio.get_event_loop().run_until_complete(main())
