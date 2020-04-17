@@ -214,6 +214,7 @@ def printHelp():
     print("     remove: remove a music in the list")
     print("     ")
     print("     standby add: add to standby list")
+    print("     standby import FILE: import to standby list from file")
     print("     standby list(ls): show list of not played music in standby list")
     print("     standby full list: show full list of standby music")
     print("     standby remove: remove a music in standby list")
@@ -418,7 +419,7 @@ class MyBLiveClient(blivedm.BLiveClient):
         global income
         print(f'{gift.uname} 赠送{gift.gift_name}x{gift.num} （{gift.coin_type}币x{gift.total_coin}）')
         await text2Speech('感谢' + gift.uname + '赠送的' + gift.gift_name)
-        if gift.coin_type == gold:
+        if gift.coin_type == "gold":
             income += gift.total_coin
 
     async def _on_buy_guard(self, message: blivedm.GuardBuyMessage):
