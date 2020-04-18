@@ -2,7 +2,9 @@
 
 轻量化bilibili直播点歌器
 
-使用前必须安装VLC
+使用前必须安装VLC  
+
+下载请移步Release
 
 基于:
 blivedm: https://github.com/xfgryujk/blivedm
