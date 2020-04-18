@@ -46,6 +46,9 @@ server = "http://kery.fgprc.org:3000"
 # 5: 'Stopped',
 # 6: 'Ended',
 # 7: 'Error'}
+#
+#Bug record:
+#圆周率之歌 葛平
 
 def listenKeyboard(loop):
     global songIndex
