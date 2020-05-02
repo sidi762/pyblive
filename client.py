@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Sidi Liang, 2020
+# Sidi Liang, Weihao Lee, 2020
 
 import asyncio
 import blivedm
@@ -115,6 +115,8 @@ def keyboardLogic(loop):
                 importFromFile(i[15:])
             except:
                 print("Import error: invalid file " + i[15:])
+        else:
+            print("Error: command not found")
    
     elif i[0:5] == "swap " and i[6] == " ":
         try:
@@ -229,7 +231,14 @@ def printHelp():
 def importFromFile(file, list=standbyList):
     importFile = open(file)
     for line in importFile.readlines():                         
+        for index in range(len(line)):
+            if line[index] == "#":
+                line = line[0:index]
+                break
+        
         line = line.strip() #去掉每行头尾空白  
+        if line == "":
+            continue
         searchTask = asyncio.ensure_future(searchSong(line))
         asyncio.get_event_loop().run_until_complete(searchTask)
         song = searchTask.result()
