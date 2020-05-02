@@ -17,8 +17,8 @@ import os
 import getpass
 
 version = "2.3"
-versionStatus = "beta 4"
-build = 26
+versionStatus = "beta 5"
+build = 27
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
