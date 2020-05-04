@@ -17,8 +17,8 @@ import os
 import getpass
 
 version = "2.3"
-versionStatus = "beta 5"
-build = 27
+versionStatus = "beta 6"
+build = 28
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -104,7 +104,7 @@ def keyboardLogic(loop):
             showFullSongList(standbyList, standbyIndex)
         elif i[8:] == "next":
             mediaPlayer.stop()
-        elif i[8:] == "remove ":
+        elif i[8:15] == "remove ":
             try:
                 songToBeRemoved = int(i[8:]) - 1 #从1开始数
                 standbyList.pop(songToBeRemoved)
