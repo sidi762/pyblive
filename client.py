@@ -15,10 +15,11 @@ import threading
 import vlc
 import os
 import getpass
+from multiprocessing import Process
 
 version = "2.3"
-versionStatus = "beta 7"
-build = 29
+versionStatus = "beta 8"
+build = 30
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -50,9 +51,18 @@ server = "http://kery.fgprc.org:3000"
 #Bug record:
 #圆周率之歌 葛平
 
+def text2SpeechProcess(content):
+    ttsEngine = pyttsx3.init()
+    ttsEngine.say(content)
+    ttsEngine.runAndWait()
 
-ttsEngine = pyttsx3.init()
+async def text2SpeechInProcess(content):
+    ttsProcess = Process(target=text2SpeechProcess,args=(content,))
+    ttsProcess.start()
+    return
+    
 async def text2Speech(content):
+    ttsEngine = pyttsx3.init()
     ttsEngine.say(content)
     ttsEngine.runAndWait()
     return
@@ -159,6 +169,9 @@ def keyboardLogic(loop):
         print("     Total income: " + str(income))
         print("     Quitting, Good bye")
         os._exit(0)
+    elif i[0:3] == "say":
+        ttsProcess = Process(target=text2SpeechProcess,args=(i[4:],))
+        ttsProcess.start()
     else:
         print("Error: command not found")
     
@@ -274,11 +287,7 @@ def setSong(index):
     else:
         print("     Failed: Song cannot be played")
         #pyttsx3.speak("很抱歉，由于出现了一些错误，此歌曲播放失败")
-        try:
-            ttsEngine.endLoop() #Seems it's causing an error on macOS. This could be solved by switching to using process but is it worth it?
-        except:
-            pass
-        speechTask = asyncio.ensure_future(text2Speech("很抱歉，由于出现了一些错误，此歌曲播放失败"))
+        speechTask = asyncio.ensure_future(text2SpeechInProcess("很抱歉，由于出现了一些错误，此歌曲播放失败"))
         asyncio.get_event_loop().run_until_complete(speechTask)
     songIndex = index + 1
     return
