@@ -6,7 +6,7 @@ import blivedm
 import pyttsx3
 import pyttsx3.drivers
 # MacOS System please import nsss
-# import pyttsx3.drivers.nsss
+import pyttsx3.drivers.nsss
 # Windows System please import sapi5
 # import pyttsx3.drivers.sapi5
 import json
@@ -17,8 +17,8 @@ import os
 import getpass
 
 version = "2.3"
-versionStatus = "beta 6"
-build = 28
+versionStatus = "beta 7"
+build = 29
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -49,6 +49,13 @@ server = "http://kery.fgprc.org:3000"
 #
 #Bug record:
 #圆周率之歌 葛平
+
+
+ttsEngine = pyttsx3.init()
+async def text2Speech(content):
+    ttsEngine.say(content)
+    ttsEngine.runAndWait()
+    return
 
 def listenKeyboard(loop):
     global songIndex
@@ -266,6 +273,13 @@ def setSong(index):
         print("     playing " + songList[index][0])
     else:
         print("     Failed: Song cannot be played")
+        #pyttsx3.speak("很抱歉，由于出现了一些错误，此歌曲播放失败")
+        try:
+            ttsEngine.endLoop() #Seems it's causing an error on macOS. This could be solved by switching to using process but is it worth it?
+        except:
+            pass
+        speechTask = asyncio.ensure_future(text2Speech("很抱歉，由于出现了一些错误，此歌曲播放失败"))
+        asyncio.get_event_loop().run_until_complete(speechTask)
     songIndex = index + 1
     return
 
@@ -369,13 +383,6 @@ async def addToList(song, targetList, mode=0):
         elif mode == 1:
             standbyList.append(song)
             print("Song " + song[0] + " added to the standby list")
-
-
-ttsEngine = pyttsx3.init()
-async def text2Speech(content):
-    ttsEngine.say(content)
-    ttsEngine.runAndWait()
-    return
 
 class MyBLiveClient(blivedm.BLiveClient):
 
