@@ -229,6 +229,7 @@ def mediaControlLoop(loop):
 
 def printHelp():
     print("Usage:")
+    print("     say CONTENT: say anything you want")
     print("     status: show current popularity")
     print("     play: start playing music list")
     print("     pause: pause music")
