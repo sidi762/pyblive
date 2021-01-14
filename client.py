@@ -18,7 +18,7 @@ import getpass
 from multiprocessing import Process
 
 version = "2.3"
-versionStatus = "beta 9"
+versionStatus = "release"
 build = 31
 
 vlcInstance = vlc.Instance()
