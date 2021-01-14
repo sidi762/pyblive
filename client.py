@@ -18,8 +18,8 @@ import getpass
 from multiprocessing import Process
 
 version = "2.3"
-versionStatus = "beta 8"
-build = 30
+versionStatus = "beta 9"
+build = 31
 
 vlcInstance = vlc.Instance()
 mediaPlayer = vlc.MediaPlayer(vlcInstance)
@@ -123,7 +123,7 @@ def keyboardLogic(loop):
             mediaPlayer.stop()
         elif i[8:15] == "remove ":
             try:
-                songToBeRemoved = int(i[8:]) - 1 #从1开始数
+                songToBeRemoved = int(i[15:]) - 1 #从1开始数
                 standbyList.pop(songToBeRemoved)
             except:
                 print("Error: invalid arguments")
@@ -237,13 +237,13 @@ def printHelp():
     print("     next: switch to next music")
     print("     list(ls): show list of not played music")
     print("     full list: show full list of music")
-    print("     remove: remove a music in the list")
+    print("     remove INDEX: remove a music in the list")
     print("     ")
-    print("     standby add: add to standby list")
+    print("     standby add SONG_NAME: add to standby list")
     print("     standby import FILE: import to standby list from file")
     print("     standby list(ls): show list of not played music in standby list")
     print("     standby full list: show full list of standby music")
-    print("     standby remove: remove a music in standby list")
+    print("     standby remove INDEX: remove a music in standby list")
     print("     clear(macOS, linux): clear screen")
     print("     cls(Windows): clear screen")
     print("     help: show help message")
