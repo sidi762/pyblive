@@ -35,7 +35,7 @@ neteasePhone = 0
 neteasePasswd = 0
 roomid = 0
 #server = "http://127.0.0.1:3000"
-server = "http://kery.fgprc.org:3000"
+server = "http://www.fgprc.org.cn:3000"
 
 #Development Note
 #VLC MediaPlayer State
@@ -172,6 +172,20 @@ def keyboardLogic(loop):
     elif i[0:3] == "say":
         ttsProcess = Process(target=text2SpeechProcess,args=(i[4:],))
         ttsProcess.start()
+    elif i[0:10] == "set volome":
+        volumeIsSet = vlc.libvlc_audio_set_volume(mediaPlayer, i[10:])
+        if volumeIsSet == -1:
+             print("Error: Volume out of range")
+        else:
+             print("Volume set " + i[10:] + "%")
+        #endif       
+    elif i[0:7] == "set vol":
+        volumeIsSet = vlc.libvlc_audio_set_volume(mediaPlayer, i[7:])
+        if volumeIsSet == -1:
+             print("Error: Volume out of range")
+        else:
+             print("Volume set " + i[7:] + "%")
+        #endif
     else:
         print("Error: command not found")
     
