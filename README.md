@@ -1,5 +1,5 @@
 # pyblive
-
+# 【已归档】由于api更新现已不可用
 轻量化bilibili直播点歌器
 
 使用前必须安装VLC  
